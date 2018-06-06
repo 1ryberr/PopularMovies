@@ -17,6 +17,13 @@ public class NetworkUtils {
     final static String PARAM_SORT = "sort";
     final static String sortBy = "stars";
 
+    //https://api.themoviedb.org/3/movie/latest?api_key=<<api_key>>&language=en-US
+    //https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en-US&page=1
+   // https://api.themoviedb.org/3/movie/popular?api_key=<<api_key>>&language=en-US&page=1
+    //https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
+
+
+
 
     public static URL buildUrl(String githubSearchQuery) {
         Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
