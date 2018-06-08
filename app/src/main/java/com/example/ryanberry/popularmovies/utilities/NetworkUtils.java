@@ -11,26 +11,25 @@ import java.util.Scanner;
 
 public class NetworkUtils {
     final static String GITHUB_BASE_URL =
-            "https://api.themoviedb.org/3";
+            "https://api.themoviedb.org/";
+    final static String KEY_API_KEY = "api_key";
+    final static String API_KEY = "f8bee446e16e33af6dc7bc4f213217f2";
+    final static String METHOD_POPULAR = "/3/movie/popular";
+    final static String METHOD_TOP_RATED = "/3/movie/top_rated";
+    final static String LANGUAGE_KEY = "language";
+    final static String LANGUAGE_VALUE = "en-US";
+    final static String PAGE_KEY = "page";
+    final static String PAGE_VALUE = "1";
 
-    final static String PARAM_QUERY = "q";
-    final static String PARAM_SORT = "sort";
-    final static String sortBy = "stars";
+    
 
-    //https://api.themoviedb.org/3/movie/latest?api_key=<<api_key>>&language=en-US
-    //https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en-US&page=1
-   // https://api.themoviedb.org/3/movie/popular?api_key=<<api_key>>&language=en-US&page=1
-    //https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
-
-
-
-
-    public static URL buildUrl(String githubSearchQuery) {
+    public static URL buildUrl() {
         Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_QUERY, githubSearchQuery)
-                .appendQueryParameter(PARAM_SORT, sortBy)
+               .path(METHOD_POPULAR)
+                .appendQueryParameter(KEY_API_KEY,API_KEY)
+                .appendQueryParameter(LANGUAGE_KEY,LANGUAGE_VALUE)
+                .appendQueryParameter(PAGE_KEY,PAGE_VALUE)
                 .build();
-
         URL url = null;
         try {
             url = new URL(builtUri.toString());
