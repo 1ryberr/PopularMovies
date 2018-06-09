@@ -6,10 +6,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.ryanberry.popularmovies.model.PopularMovie;
+import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,18 +32,18 @@ public class MainActivity extends AppCompatActivity {
         Log.v(" My stuff", NetworkUtils.buildUrl().toString());
 
 
-         URL githubSearchUrl = NetworkUtils.buildUrl();
-         new GithubQueryTask().execute(githubSearchUrl);
+         URL movieSearchUrl = NetworkUtils.buildUrl();
+         new TheMovieDBQueryTask().execute(movieSearchUrl);
     }
 //    private void makeGithubSearchQuery() {
-//      //  String githubQuery = mSearchBoxEditText.getText().toString();
-        URL githubSearchUrl = NetworkUtils.buildUrl();
-//      //  mUrlDisplayTextView.setText(githubSearchUrl.toString());
-//        new GithubQueryTask().execute(githubSearchUrl);
+
+
+      //  URL githubSearchUrl = NetworkUtils.buildUrl();
+
 //    }
 
 
-    public class GithubQueryTask extends AsyncTask<URL, Void, String> {
+    public class TheMovieDBQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -45,24 +54,34 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(URL... params) {
             URL searchUrl = params[0];
-            Log.v(" My stuff",searchUrl.toString());
 
-           String githubSearchResults = null;
+
+           String movieSearchResults = null;
+
             try {
-                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-                Log.v(" My stuff",githubSearchResults);
+                movieSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+                Log.v(" My stuff",movieSearchResults);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return githubSearchResults;
+            return movieSearchResults;
         }
 
         @Override
-        protected void onPostExecute(String githubSearchResults) {
+        protected void onPostExecute(String movieSearchResults) {
            // mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (githubSearchResults != null && !githubSearchResults.equals("")) {
-           //     showJsonDataView();
+            if (movieSearchResults != null && !movieSearchResults.equals("")) {
+          PopularMovie[] array =  JsonUtils.parseMovieJson(movieSearchResults);
+
+
+                   Log.v("OnPost", String.valueOf(array[4].getOriginalTitle()));
+
+
+
+
+
+
 
             } else {
 

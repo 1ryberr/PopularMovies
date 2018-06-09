@@ -21,7 +21,6 @@ public class NetworkUtils {
     final static String PAGE_KEY = "page";
     final static String PAGE_VALUE = "1";
 
-    
 
     public static URL buildUrl() {
         Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
