@@ -1,24 +1,27 @@
 package com.example.ryanberry.popularmovies;
+
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
+
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.GridView;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private GridView gridView;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-         URL movieSearchUrl = NetworkUtils.buildUrl();
-         new TheMovieDBQueryTask().execute(movieSearchUrl);
+        URL movieSearchUrl = NetworkUtils.buildUrl();
+        new TheMovieDBQueryTask().execute(movieSearchUrl);
     }
 
 
@@ -27,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-        //    mLoadingIndicator.setVisibility(View.VISIBLE);
+            //    mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -35,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
             URL searchUrl = params[0];
 
 
-           String movieSearchResults = null;
+            String movieSearchResults = null;
 
             try {
                 movieSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-                Log.v(" My stuff",movieSearchResults);
+                Log.v(" My stuff", movieSearchResults);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -49,28 +52,22 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String movieSearchResults) {
-           // mLoadingIndicator.setVisibility(View.INVISIBLE);
+            // mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieSearchResults != null && !movieSearchResults.equals("")) {
-          PopularMovie[] array =  JsonUtils.parseMovieJson(movieSearchResults);
+                gridView =(GridView) findViewById(R.id.movie_gridView);
+                List<PopularMovie> array = JsonUtils.parseMovieJson(movieSearchResults);
+                MovieAdapter movieAdapter = new MovieAdapter(array,MainActivity.this);
+                gridView.setAdapter(movieAdapter);
 
-
-                   Log.v("OnPost", String.valueOf(array[4].getOriginalTitle()));
-
+                Log.v("OnPost", String.valueOf(array.get(4).getOriginalTitle()));
 
 
             } else {
 
-            //    showErrorMessage();
+                //    showErrorMessage();
             }
         }
     }
-
-
-
-
-
-
-
 
 
 }

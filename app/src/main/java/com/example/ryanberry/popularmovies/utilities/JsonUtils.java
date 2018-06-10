@@ -7,8 +7,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JsonUtils {
-    public static PopularMovie[] parseMovieJson(String json) {
+    public static List parseMovieJson(String json) {
 
         JSONObject movies = null;
         JSONArray results = null;
@@ -17,13 +20,12 @@ public class JsonUtils {
         int voteAverage = 0;
         String overView = null;
         String releaseDate = null;
-        PopularMovie[] myMovies = new PopularMovie[0];
+        List<PopularMovie> myMovies = new ArrayList<PopularMovie>();
 
         try {
 
             movies = new JSONObject(json);
             results = movies.getJSONArray("results");
-            myMovies = new PopularMovie[results.length()];
 
             for (int i = 0; i < results.length(); i++) {
 
@@ -32,7 +34,7 @@ public class JsonUtils {
                 voteAverage = results.getJSONObject(i).getInt("vote_average");
                 overView = results.getJSONObject(i).getString("overview");
                 releaseDate = results.getJSONObject(i).getString("release_date");
-                myMovies[i] = new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate);
+                myMovies.add( new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate));
 
             }
 
