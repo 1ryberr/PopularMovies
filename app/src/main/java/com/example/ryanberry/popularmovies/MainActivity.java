@@ -4,11 +4,15 @@ import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         URL movieSearchUrl = NetworkUtils.buildUrl();
         new TheMovieDBQueryTask().execute(movieSearchUrl);
     }
@@ -55,9 +60,26 @@ public class MainActivity extends AppCompatActivity {
             // mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieSearchResults != null && !movieSearchResults.equals("")) {
                 gridView =(GridView) findViewById(R.id.movie_gridView);
-                List<PopularMovie> array = JsonUtils.parseMovieJson(movieSearchResults);
+                final List<PopularMovie> array = JsonUtils.parseMovieJson(movieSearchResults);
                 MovieAdapter movieAdapter = new MovieAdapter(array,MainActivity.this);
                 gridView.setAdapter(movieAdapter);
+
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View v,
+                                            int position, long id) {
+
+
+                        Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
+                        intent.putExtra("Poster", array.get(position).getPosterPath());
+                        intent.putExtra("ReleaseDate", array.get(position).getReleaseDate());
+                        intent.putExtra("Title", array.get(position).getOriginalTitle());
+                        intent.putExtra("OverView", array.get(position).getOverView());
+                         startActivity(intent);
+                        Toast.makeText(MainActivity.this, "" + position,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
                 Log.v("OnPost", String.valueOf(array.get(4).getOriginalTitle()));
 

@@ -24,7 +24,7 @@ public class NetworkUtils {
 
     public static URL buildUrl() {
         Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
-               .path(METHOD_POPULAR)
+               .path(METHOD_POPULAR )
                 .appendQueryParameter(KEY_API_KEY,API_KEY)
                 .appendQueryParameter(LANGUAGE_KEY,LANGUAGE_VALUE)
                 .appendQueryParameter(PAGE_KEY,PAGE_VALUE)
