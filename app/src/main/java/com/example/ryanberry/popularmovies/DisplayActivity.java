@@ -9,22 +9,24 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 public class DisplayActivity extends AppCompatActivity {
     private static final String TAG = "DisplayActivity";
-    ImageView image;
-    TextView titleText;
-    TextView releaseText;
-    TextView overViewText;
+    private ImageView image;
+    private TextView titleText;
+    private TextView releaseText;
+    private TextView overViewText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
+
         Intent intent = getIntent();
         String poster = intent.getStringExtra("Poster");
         String title = intent.getStringExtra("Title");
@@ -32,15 +34,15 @@ public class DisplayActivity extends AppCompatActivity {
         String overView = intent.getStringExtra("OverView");
 
 
-        overViewText = (TextView)findViewById(R.id.overViewTextView);
+        overViewText = (TextView) findViewById(R.id.overViewTextView);
         overViewText.setText(overView);
 
         releaseText = (TextView) findViewById(R.id.releaseTextView);
         releaseText.setText(releaseDate);
 
-                titleText = (TextView)findViewById(R.id.titleTextView);
+        titleText = (TextView) findViewById(R.id.titleTextView);
         titleText.setText(title);
-      //  String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
 
         image = (ImageView) findViewById(R.id.imageView);
 
@@ -48,9 +50,7 @@ public class DisplayActivity extends AppCompatActivity {
 
                 .load("https://image.tmdb.org/t/p/w185" + poster)
                 .placeholder(R.mipmap.ic_launcher)
-                .into(  image );
-
-
+                .into(image);
 
 
         Log.v(TAG, poster);

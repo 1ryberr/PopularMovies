@@ -27,8 +27,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="96dp"
-        android:layout_height="150dp"
+        android:layout_width="105dp"
+        android:layout_height="159dp"
         android:layout_marginLeft="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
@@ -79,7 +79,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="100dp"
         android:layout_marginStart="16dp"
-        android:text="Button"
+        android:text="Mark as Favorite"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         app:layout_constraintBottom_toTopOf="@+id/overViewTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -155,4 +156,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overViewTextView" />
+
+
 </android.support.constraint.ConstraintLayout>

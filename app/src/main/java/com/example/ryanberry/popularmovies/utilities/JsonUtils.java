@@ -12,7 +12,6 @@ import java.util.List;
 
 public class JsonUtils {
     public static List parseMovieJson(String json) {
-
         JSONObject movies = null;
         JSONArray results = null;
         String posterPath = null;
