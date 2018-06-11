@@ -6,6 +6,8 @@ import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Network;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,20 +26,27 @@ import java.net.URL;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "MainActivity";
     private GridView gridView;
     private ProgressBar mLoadingIndicator;
-    private String METHOD_POPULAR = "/3/movie/popular";
-    private String METHOD_TOP_RATED = "/3/movie/top_rated";
     private URL movieSearchUrl;
     private String top = "Top Rated Movies";
     private String pop = "Most Popular Movies";
+    String[] popOrTop = new String[]{"/3/movie/popular","/3/movie/top_rated"};
+    int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null){
+            index = savedInstanceState.getInt("movie_options");
+        }else{
+            index = 0;
+        }
         setContentView(R.layout.activity_main);
-        searchMovies(METHOD_POPULAR,pop);
+        searchMovies(popOrTop[index],pop);
     }
 
 
@@ -93,24 +102,19 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-            } else {
+            } else if (movieSearchResults == null) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 
+                builder.setTitle("Network Error");
+                builder.setMessage(R.string.error_message);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
+                        finish();
                     }
                 });
-                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
+               builder.show();
 
-
-
-                AlertDialog dialog = builder.create();
             }
         }
 
@@ -126,6 +130,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("movie_options",index);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -138,11 +148,13 @@ public class MainActivity extends AppCompatActivity {
       switch (item.getItemId()){
 
           case R.id.most_popular:
-              searchMovies(METHOD_POPULAR,pop);
+              index = 0;
+              searchMovies(popOrTop[index],pop);
               return true;
 
           case R.id.top_rated:
-              searchMovies(METHOD_TOP_RATED,top);
+              index = 1;
+              searchMovies(popOrTop[index],top);
               return true;
 
           default:

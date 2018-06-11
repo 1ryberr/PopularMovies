@@ -40,7 +40,7 @@ public class DisplayActivity extends AppCompatActivity {
         overViewText = (TextView) findViewById(R.id.overViewTextView);
         overViewText.setText(overView);
 
-        releaseText = (TextView) findViewById(R.id.releaseTextView);
+        releaseText = (TextView) findViewById(R.id.releaseDatetextView);
         releaseText.setText(releaseDate);
 
         titleText = (TextView) findViewById(R.id.titleTextView);
