@@ -20,6 +20,8 @@ public class DisplayActivity extends AppCompatActivity {
     private TextView titleText;
     private TextView releaseText;
     private TextView overViewText;
+    private TextView ratingTextView;
+
 
 
     @Override
@@ -32,6 +34,7 @@ public class DisplayActivity extends AppCompatActivity {
         String title = intent.getStringExtra("Title");
         String releaseDate = intent.getStringExtra("ReleaseDate");
         String overView = intent.getStringExtra("OverView");
+        int voteAverage = intent.getIntExtra("VoteAverage",0);
 
 
         overViewText = (TextView) findViewById(R.id.overViewTextView);
@@ -42,7 +45,8 @@ public class DisplayActivity extends AppCompatActivity {
 
         titleText = (TextView) findViewById(R.id.titleTextView);
         titleText.setText(title);
-
+        ratingTextView = (TextView) findViewById(R.id.ratingTextView);
+        ratingTextView.setText(String.valueOf(voteAverage));
 
         image = (ImageView) findViewById(R.id.imageView);
 
@@ -52,8 +56,6 @@ public class DisplayActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .into(image);
 
-
-        Log.v(TAG, poster);
     }
 
 }

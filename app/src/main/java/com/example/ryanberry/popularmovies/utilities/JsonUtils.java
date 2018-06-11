@@ -3,6 +3,7 @@ package com.example.ryanberry.popularmovies.utilities;
 import android.util.Log;
 
 import com.example.ryanberry.popularmovies.model.PopularMovie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,12 +34,12 @@ public class JsonUtils {
                 voteAverage = results.getJSONObject(i).getInt("vote_average");
                 overView = results.getJSONObject(i).getString("overview");
                 releaseDate = results.getJSONObject(i).getString("release_date");
-                myMovies.add( new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate));
+                myMovies.add(new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate));
 
             }
 
         } catch (JSONException e) {
-                 e.printStackTrace();
+            e.printStackTrace();
 
         }
 

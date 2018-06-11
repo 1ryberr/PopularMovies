@@ -50,12 +50,11 @@ public class MovieAdapter extends BaseAdapter {
         Picasso.with(mContext)
 
                 .load("https://image.tmdb.org/t/p/w185" + movies.get(position).getPosterPath())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_launcher_round)
                 .into(imageView);
 
 
         return imageView;
     }
-
 
 }

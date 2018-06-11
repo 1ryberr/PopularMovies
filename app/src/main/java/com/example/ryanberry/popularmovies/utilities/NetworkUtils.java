@@ -10,24 +10,21 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final static String GITHUB_BASE_URL =
-            "https://api.themoviedb.org/";
+    final static String GITHUB_BASE_URL = "https://api.themoviedb.org/";
     final static String KEY_API_KEY = "api_key";
     final static String API_KEY = "f8bee446e16e33af6dc7bc4f213217f2";
-    final static String METHOD_POPULAR = "/3/movie/popular";
-    final static String METHOD_TOP_RATED = "/3/movie/top_rated";
     final static String LANGUAGE_KEY = "language";
     final static String LANGUAGE_VALUE = "en-US";
     final static String PAGE_KEY = "page";
     final static String PAGE_VALUE = "1";
 
 
-    public static URL buildUrl() {
+    public static URL buildUrl(String path) {
         Uri builtUri = Uri.parse(GITHUB_BASE_URL).buildUpon()
-               .path(METHOD_POPULAR )
-                .appendQueryParameter(KEY_API_KEY,API_KEY)
-                .appendQueryParameter(LANGUAGE_KEY,LANGUAGE_VALUE)
-                .appendQueryParameter(PAGE_KEY,PAGE_VALUE)
+                .path(path)
+                .appendQueryParameter(KEY_API_KEY, API_KEY)
+                .appendQueryParameter(LANGUAGE_KEY, LANGUAGE_VALUE)
+                .appendQueryParameter(PAGE_KEY, PAGE_VALUE)
                 .build();
         URL url = null;
         try {
