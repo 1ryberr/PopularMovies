@@ -1,18 +1,11 @@
 package com.example.ryanberry.popularmovies;
 
-import com.example.ryanberry.popularmovies.model.PopularMovie;
-import com.example.ryanberry.popularmovies.utilities.JsonUtils;
-import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
-
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Network;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +13,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.ryanberry.popularmovies.model.PopularMovie;
+import com.example.ryanberry.popularmovies.utilities.JsonUtils;
+import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -33,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private URL movieSearchUrl;
     private String top = "Top Rated Movies";
     private String pop = "Most Popular Movies";
-    String[] popOrTop = new String[]{"/3/movie/popular","/3/movie/top_rated"};
-    int index = 0;
+    private String[] popOrTop = new String[]{"/3/movie/popular","/3/movie/top_rated"};
+    private int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
