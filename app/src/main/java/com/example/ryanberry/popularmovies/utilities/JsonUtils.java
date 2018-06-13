@@ -20,6 +20,7 @@ public class JsonUtils {
         int voteAverage = 0;
         String overView = null;
         String releaseDate = null;
+        int id = 0;
         List<PopularMovie> myMovies = new ArrayList<PopularMovie>();
 
         try {
@@ -34,7 +35,8 @@ public class JsonUtils {
                 voteAverage = results.getJSONObject(i).getInt("vote_average");
                 overView = results.getJSONObject(i).getString("overview");
                 releaseDate = results.getJSONObject(i).getString("release_date");
-                myMovies.add(new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate));
+                id = results.getJSONObject(i).getInt("id");
+                myMovies.add(new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate,id));
 
             }
 

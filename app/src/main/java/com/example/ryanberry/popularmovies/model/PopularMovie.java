@@ -6,15 +6,16 @@ public class PopularMovie {
     private int voteAverage;
     private String overView;
     private String releaseDate;
+    private int id;
 
 
-
-    public PopularMovie(String posterPath, String originalTitle, int voteAverage, String overView, String releaseDate) {
+    public PopularMovie(String posterPath, String originalTitle, int voteAverage, String overView, String releaseDate, int id) {
         this.posterPath = posterPath;
         this.originalTitle = originalTitle;
         this.voteAverage = voteAverage;
         this.overView = overView;
         this.releaseDate = releaseDate;
+        this.id = id;
     }
 
     public String getPosterPath() {
@@ -56,4 +57,13 @@ public class PopularMovie {
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
 }
