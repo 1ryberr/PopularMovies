@@ -49,5 +49,32 @@ public class JsonUtils {
         return myMovies;
     }
 
+    public static List parseMovieTrailerJson(String json) {
+        JSONObject trailer = null;
+        String key = null;
+        JSONArray results = null;
+        List<String> myTrailers = new ArrayList<String>();
+
+        try {
+             trailer =  new JSONObject(json);
+             results = trailer.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                key = results.getJSONObject(i).getString("key");
+                myTrailers.add(key);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+
+
+        return myTrailers;
+
+    }
+
+
+
 
 }
