@@ -50,7 +50,7 @@
     <TextView
         android:id="@+id/releaseTextView"
         android:layout_width="0dp"
-        android:layout_height="24dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
@@ -115,15 +115,16 @@
     <TextView
         android:id="@+id/releaseDatetextView"
         android:layout_width="0dp"
-        android:layout_height="17dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="39dp"
         app:layout_constraintBottom_toTopOf="@+id/ratingTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/releaseTextView"
         app:layout_constraintTop_toBottomOf="@+id/view2"
-        app:layout_constraintVertical_bias="0.888" />
+        app:layout_constraintVertical_bias="0.384" />
 
     <View
         android:id="@+id/lineView"
@@ -190,7 +191,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
-        android:tint="?attr/colorPrimaryDark"
+        android:tint="@android:color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@android:drawable/ic_media_play" />
@@ -246,6 +247,19 @@
         android:text="Trailer 2"
         app:layout_constraintStart_toEndOf="@+id/trailerBtn2"
         app:layout_constraintTop_toBottomOf="@+id/view" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="Reviews"
+        android:textColor="#040404"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
 
 </android.support.constraint.ConstraintLayout>

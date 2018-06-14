@@ -3,25 +3,22 @@ package com.example.ryanberry.popularmovies;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.ryanberry.popularmovies.model.PopularMovie;
+import com.example.ryanberry.popularmovies.model.Reviewer;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +33,8 @@ public class DisplayActivity extends AppCompatActivity {
     private TextView ratingTextView;
     private ImageButton trailerBtn;
     private ImageButton trailerBtn2;
-    private URL movieSearchUrl;
+    private URL trailerSearchUrl;
+    private URL reviewSearchUrl;
     private int id = 0;
     private String videos;
     private String reviews;
@@ -54,7 +52,7 @@ public class DisplayActivity extends AppCompatActivity {
         String overView = intent.getStringExtra("OverView");
         int voteAverage = intent.getIntExtra("VoteAverage", 0);
         id = intent.getIntExtra("id", 0);
-        Log.v(TAG, String.valueOf(id));
+       // Log.v(TAG, String.valueOf(id));
 
         trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
         trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
@@ -80,8 +78,10 @@ public class DisplayActivity extends AppCompatActivity {
 
         videos = "/3/movie/" + id + "/videos";
         reviews = "/3/movie/" + id + "/reviews";
-        movieSearchUrl = NetworkUtils.buildUrl(videos);
-        new TheMovieDBQueryTask().execute(movieSearchUrl);
+        trailerSearchUrl = NetworkUtils.buildUrl(videos);
+        reviewSearchUrl = NetworkUtils.buildUrl(reviews);
+        new TheMovieDBTrailerQueryTask().execute(trailerSearchUrl);
+        new TheMovieDBReviewsQueryTask().execute(reviewSearchUrl);
         trailerBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,12 +96,16 @@ public class DisplayActivity extends AppCompatActivity {
         trailerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (keys.size() > 0) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(0))));
+                }else{
+                    Log.v(TAG, "too small");
+                }
             }
         });
     }
 
-    public class TheMovieDBQueryTask extends AsyncTask<URL, Void, String> {
+    public class TheMovieDBTrailerQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -111,12 +115,11 @@ public class DisplayActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String movieSearchResults = null;
+            URL searchtrailerUrl = params[0];
+            String movieTrailerResults = null;
 
             try {
-                movieSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-                Log.v(TAG, movieSearchResults);
+                movieTrailerResults = NetworkUtils.getResponseFromHttpUrl(searchtrailerUrl);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -131,15 +134,69 @@ public class DisplayActivity extends AppCompatActivity {
                 });
                 builder.show();
             }
-            return movieSearchResults;
+            return  movieTrailerResults;
+
         }
 
         @Override
         protected void onPostExecute(String movieSearchResults) {
             // mLoadingIndicator.setVisibility(View.INVISIBLE);
+
             if (movieSearchResults != null && !movieSearchResults.equals("")) {
                 keys = JsonUtils.parseMovieTrailerJson(movieSearchResults);
-                Log.v(TAG, String.valueOf(JsonUtils.parseMovieTrailerJson(movieSearchResults)));
+
+            }
+
+
+        }
+
+    }
+
+    public class TheMovieDBReviewsQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL searchRevewsUrl = params[0];
+
+            String movieReviewResults = null;
+
+            try {
+
+                movieReviewResults = NetworkUtils.getResponseFromHttpUrl(searchRevewsUrl);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+
+                builder.setTitle("Network Error");
+                builder.setMessage(R.string.error_message);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+                builder.show();
+            }
+            return  movieReviewResults;
+
+        }
+
+        @Override
+        protected void onPostExecute(String movieSearchResults) {
+            // mLoadingIndicator.setVisibility(View.INVISIBLE);
+             List<Reviewer> mReviewer;
+            if (movieSearchResults != null && !movieSearchResults.equals("")) {
+                mReviewer = JsonUtils.parseReviewsJson(movieSearchResults);
+                if (mReviewer.size() > 0) {
+                    Log.v(TAG, mReviewer.get(0).getAuthor());
+                }
             }
 
 

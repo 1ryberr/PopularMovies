@@ -3,6 +3,7 @@ package com.example.ryanberry.popularmovies.utilities;
 import android.util.Log;
 
 import com.example.ryanberry.popularmovies.model.PopularMovie;
+import com.example.ryanberry.popularmovies.model.Reviewer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +37,7 @@ public class JsonUtils {
                 overView = results.getJSONObject(i).getString("overview");
                 releaseDate = results.getJSONObject(i).getString("release_date");
                 id = results.getJSONObject(i).getInt("id");
-                myMovies.add(new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate,id));
+                myMovies.add(new PopularMovie(posterPath, originalTitle, voteAverage, overView, releaseDate, id));
 
             }
 
@@ -56,8 +57,8 @@ public class JsonUtils {
         List<String> myTrailers = new ArrayList<String>();
 
         try {
-             trailer =  new JSONObject(json);
-             results = trailer.getJSONArray("results");
+            trailer = new JSONObject(json);
+            results = trailer.getJSONArray("results");
 
             for (int i = 0; i < results.length(); i++) {
                 key = results.getJSONObject(i).getString("key");
@@ -74,7 +75,35 @@ public class JsonUtils {
 
     }
 
+    public static List<Reviewer> parseReviewsJson(String json) {
 
+        JSONObject reviews = null;
+        JSONArray results = null;
+        String author = null;
+        String content = null;
+        String url = null;
+        List<Reviewer> myReviews = new ArrayList<Reviewer>();
+
+        try {
+            reviews = new JSONObject(json);
+            results = reviews.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                author = results.getJSONObject(i).getString("author");
+                content = results.getJSONObject(i).getString("content");
+                url = results.getJSONObject(i).getString("url");
+                myReviews.add(new Reviewer(author, content, url));
+           }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+
+
+        return  myReviews ;
+
+    }
 
 
 }

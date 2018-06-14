@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("VoteAverage", array.get(position).getVoteAverage());
                         intent.putExtra("id", array.get(position).getId());
                         startActivity(intent);
-                        Toast.makeText(MainActivity.this, "" + position,
-                                Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -154,3 +152,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+//   Toast.makeText(MainActivity.this, "" + position,
+//          Toast.LENGTH_SHORT).show();
