@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,12 +34,11 @@ public class DisplayActivity extends AppCompatActivity {
     private TextView ratingTextView;
     private ImageButton trailerBtn;
     private ImageButton trailerBtn2;
+    private Button reviewsBTN;
     private URL trailerSearchUrl;
-    private URL reviewSearchUrl;
     private int id = 0;
     private String videos;
-    private String reviews;
-    private List <String> keys;
+    private List<String> keys;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,10 @@ public class DisplayActivity extends AppCompatActivity {
         String overView = intent.getStringExtra("OverView");
         int voteAverage = intent.getIntExtra("VoteAverage", 0);
         id = intent.getIntExtra("id", 0);
-       // Log.v(TAG, String.valueOf(id));
 
         trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
         trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
+        reviewsBTN = (Button) findViewById(R.id.reviewsBtn);
 
         overViewText = (TextView) findViewById(R.id.overViewTextView);
         overViewText.setText(overView);
@@ -76,18 +76,18 @@ public class DisplayActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .into(image);
 
+
+
         videos = "/3/movie/" + id + "/videos";
-        reviews = "/3/movie/" + id + "/reviews";
         trailerSearchUrl = NetworkUtils.buildUrl(videos);
-        reviewSearchUrl = NetworkUtils.buildUrl(reviews);
         new TheMovieDBTrailerQueryTask().execute(trailerSearchUrl);
-        new TheMovieDBReviewsQueryTask().execute(reviewSearchUrl);
+
         trailerBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (keys.size() > 1) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(1))));
-                }else{
+                } else {
                     Log.v(TAG, "too small");
                 }
             }
@@ -97,12 +97,24 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (keys.size() > 0) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(0))));
-                }else{
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(0))));
+                } else {
                     Log.v(TAG, "too small");
                 }
             }
         });
+
+        reviewsBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DisplayActivity.this, ReviewsActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+
+            }
+        });
+
+
     }
 
     public class TheMovieDBTrailerQueryTask extends AsyncTask<URL, Void, String> {
@@ -134,7 +146,7 @@ public class DisplayActivity extends AppCompatActivity {
                 });
                 builder.show();
             }
-            return  movieTrailerResults;
+            return movieTrailerResults;
 
         }
 
@@ -152,57 +164,6 @@ public class DisplayActivity extends AppCompatActivity {
 
     }
 
-    public class TheMovieDBReviewsQueryTask extends AsyncTask<URL, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            // mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL searchRevewsUrl = params[0];
-
-            String movieReviewResults = null;
-
-            try {
-
-                movieReviewResults = NetworkUtils.getResponseFromHttpUrl(searchRevewsUrl);
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-
-                builder.setTitle("Network Error");
-                builder.setMessage(R.string.error_message);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                    }
-                });
-                builder.show();
-            }
-            return  movieReviewResults;
-
-        }
-
-        @Override
-        protected void onPostExecute(String movieSearchResults) {
-            // mLoadingIndicator.setVisibility(View.INVISIBLE);
-             List<Reviewer> mReviewer;
-            if (movieSearchResults != null && !movieSearchResults.equals("")) {
-                mReviewer = JsonUtils.parseReviewsJson(movieSearchResults);
-                if (mReviewer.size() > 0) {
-                    Log.v(TAG, mReviewer.get(0).getAuthor());
-                }
-            }
-
-
-        }
-
-    }
 
 }
 

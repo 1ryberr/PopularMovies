@@ -8,4 +8,13 @@
     tools:context=".DisplayActivity"
     tools:showIn="@layout/activity_display">
 
+
+
+
+
+
+
+
+
+
 </android.support.constraint.ConstraintLayout>

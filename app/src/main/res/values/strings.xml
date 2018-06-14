@@ -2,9 +2,14 @@
     <string name="app_name">PopularMovies</string>
     <string name="title_activity_display">DisplayActivity</string>
     <string name="error_message">
-        An error has occurred. Please try again by clicking REFRESH
+        An error has occurred. Please try again
     </string>
     <string name="top_rated_movies">Top Rated Movies</string>
-     <string name="most_popular_movies">Most Popular Movies</string>
+    <string name="most_popular_movies">Most Popular Movies</string>
+    <string name="title_activity_reviews">ReviewsActivity</string>
+    <string name="author">Author:</string>
+    <string name="preview">Preview:</string>
+    <string name="url">Url:</string>
+
 
 </resources>
