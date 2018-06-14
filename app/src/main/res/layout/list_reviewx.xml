@@ -24,7 +24,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:text="@string/preview"
+        android:text="@string/review"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
@@ -70,6 +70,7 @@
     <TextView
         android:id="@+id/urlTextView"
         android:layout_width="0dp"
+        android:autoLink="web"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
