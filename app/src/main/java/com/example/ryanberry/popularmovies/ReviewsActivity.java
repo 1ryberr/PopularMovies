@@ -8,11 +8,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DialogTitle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.ryanberry.popularmovies.model.Reviewer;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
@@ -108,6 +107,9 @@ public class ReviewsActivity extends AppCompatActivity {
                 if (mReviewer.size() > 0) {
                     ReviewAdapter movieAdapter = new ReviewAdapter(ReviewsActivity.this, R.layout.list_reviewx, mReviewer);
                     listView.setAdapter(movieAdapter);
+                }else {
+                    Toast.makeText(ReviewsActivity.this, "There are no reviews",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 

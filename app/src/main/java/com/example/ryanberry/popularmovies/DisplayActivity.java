@@ -7,19 +7,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.example.ryanberry.popularmovies.model.Reviewer;
+import android.widget.Toast;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URL;
@@ -77,7 +73,6 @@ public class DisplayActivity extends AppCompatActivity {
                 .into(image);
 
 
-
         videos = "/3/movie/" + id + "/videos";
         trailerSearchUrl = NetworkUtils.buildUrl(videos);
         new TheMovieDBTrailerQueryTask().execute(trailerSearchUrl);
@@ -88,7 +83,9 @@ public class DisplayActivity extends AppCompatActivity {
                 if (keys.size() > 1) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(1))));
                 } else {
-                    Log.v(TAG, "too small");
+                    Toast.makeText(DisplayActivity.this, "There are no more trailers",
+                            Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -99,7 +96,9 @@ public class DisplayActivity extends AppCompatActivity {
                 if (keys.size() > 0) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(0))));
                 } else {
-                    Log.v(TAG, "too small");
+                    Toast.makeText(DisplayActivity.this, "There are no trailers",
+                            Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
