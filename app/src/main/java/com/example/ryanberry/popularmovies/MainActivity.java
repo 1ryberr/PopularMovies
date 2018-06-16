@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private int index = 0;
     private String[] popOrTop = new String[]{"/3/movie/popular", "/3/movie/top_rated"};
     private List<PopularMovie> moviePoster;
-    private MovieAdapter movieAdapter;
+    private MovieAdapter movieAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void posterClicked(final List<PopularMovie> moviePoster) {
-        final MovieAdapter movieAdapter = new MovieAdapter(moviePoster, MainActivity.this);
+        movieAdapter = new MovieAdapter(moviePoster, MainActivity.this);
         gridView.setAdapter(movieAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -160,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+
 
     }
 
@@ -280,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                         return false;
                     }
                 });
+                
                 index = 2;
                 return true;
 
