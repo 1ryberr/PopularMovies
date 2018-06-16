@@ -1,9 +1,9 @@
 package com.example.ryanberry.popularmovies;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -19,13 +19,19 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 
 
+
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,28 +39,33 @@ public class MainActivity extends AppCompatActivity {
     private GridView gridView;
     private ProgressBar mLoadingIndicator;
     private URL movieSearchUrl;
-    private String top = "Top Rated Movies";
-    private String pop = "Most Popular Movies";
     private int index = 0;
     private String[] popOrTop = new String[]{"/3/movie/popular", "/3/movie/top_rated"};
+    private List<PopularMovie> moviePoster;
+    private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        if (savedInstanceState != null) {
-            index = savedInstanceState.getInt("movie_options");
-        } else {
-            index = 0;
-        }
+        gridView = (GridView) findViewById(R.id.movie_gridView);
 
         if (isOnline()) {
-            Log.v(TAG, "net is available");
-            searchMovies(popOrTop[index], pop);
+            if (savedInstanceState != null) {
+                index = savedInstanceState.getInt("movie_options");
+
+            } else {
+                index = 0;
+            }
+            if (index == 2) {
+                getSupportActionBar().setTitle("My Favorite Movies");
+                posterClicked(loadData());
+
+            }else {
+                searchMovies(popOrTop[index], index);
+            }
+
         } else {
-            Log.v(TAG, "net is not available");
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
             builder.setTitle("Network Error");
@@ -65,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             builder.show();
-            
+
         }
     }
 
@@ -88,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                e.notify();
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -107,40 +117,83 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String movieSearchResults) {
+
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieSearchResults != null && !movieSearchResults.equals("")) {
-                gridView = (GridView) findViewById(R.id.movie_gridView);
-                final List<PopularMovie> array = JsonUtils.parseMovieJson(movieSearchResults);
-                MovieAdapter movieAdapter = new MovieAdapter(array, MainActivity.this);
-                gridView.setAdapter(movieAdapter);
-
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                    public void onItemClick(AdapterView<?> parent, View v,
-                                            int position, long id) {
-
-                        Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
-                        intent.putExtra("Poster", array.get(position).getPosterPath());
-                        intent.putExtra("ReleaseDate", array.get(position).getReleaseDate());
-                        intent.putExtra("Title", array.get(position).getOriginalTitle());
-                        intent.putExtra("OverView", array.get(position).getOverView());
-                        intent.putExtra("VoteAverage", array.get(position).getVoteAverage());
-                        intent.putExtra("id", array.get(position).getId());
-                        startActivity(intent);
-
-                    }
-                });
+                moviePoster = JsonUtils.parseMovieJson(movieSearchResults);
+                posterClicked(moviePoster);
 
             }
 
         }
     }
 
-    public void searchMovies(String path, String title) {
+    private void posterClicked(final List<PopularMovie> moviePoster) {
+        final MovieAdapter movieAdapter = new MovieAdapter(moviePoster, MainActivity.this);
+        gridView.setAdapter(movieAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> parent, View v,
+                                    int position, long id) {
+
+                if (isOnline()) {
+                    Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
+                    intent.putExtra("Poster", moviePoster.get(position).getPosterPath());
+                    intent.putExtra("ReleaseDate", moviePoster.get(position).getReleaseDate());
+                    intent.putExtra("Title", moviePoster.get(position).getOriginalTitle());
+                    intent.putExtra("OverView", moviePoster.get(position).getOverView());
+                    intent.putExtra("VoteAverage", moviePoster.get(position).getVoteAverage());
+                    intent.putExtra("id", moviePoster.get(position).getId());
+                    startActivity(intent);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                    builder.setTitle("Network Error");
+                    builder.setMessage(R.string.error_message);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+                    builder.show();
+
+                }
+            }
+        });
+
+    }
+
+    private List<PopularMovie> loadData() {
+
+        List<PopularMovie> moviePoster;
+        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Posters", null);
+        Type type = new TypeToken<List<PopularMovie>>() {
+        }.getType();
+        moviePoster = gson.fromJson(json, type);
+        if (moviePoster == null) {
+            moviePoster = new ArrayList<>();
+        }
+        return moviePoster;
+    }
+
+    public void searchMovies(String path, int index) {
+
+        String top = "Top Rated Movies";
+        String pop = "Most Popular Movies";
+        String title = null;
+
+        if (index == 0) {
+            title = pop;
+        } else if (index == 1) {
+            title = top;
+        }
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
         getSupportActionBar().setTitle(title);
         movieSearchUrl = NetworkUtils.buildUrl(path);
         new TheMovieDBQueryTask().execute(movieSearchUrl);
+
     }
 
 
@@ -171,13 +224,63 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.most_popular:
-                index = 0;
-                searchMovies(popOrTop[index], pop);
+
+                if (isOnline()) {
+                    index = 0;
+                    searchMovies(popOrTop[index], index);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                    builder.setTitle("Network Error");
+                    builder.setMessage(R.string.error_message);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+                    builder.show();
+                }
                 return true;
 
             case R.id.top_rated:
-                index = 1;
-                searchMovies(popOrTop[index], top);
+
+                if (isOnline()) {
+                    index = 1;
+                    searchMovies(popOrTop[index], index);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Network Error");
+                    builder.setMessage(R.string.error_message);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+                    builder.show();
+                }
+                return true;
+
+            case R.id.favorite_movies:
+                getSupportActionBar().setTitle("My Favorite Movies");
+                posterClicked(loadData());
+
+                gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        movieAdapter.removeItem(position);
+                        List<PopularMovie> popularMovie = loadData();
+                        popularMovie.remove(position);
+                        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
+                        Gson gson = new Gson();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        String jsonSave = gson.toJson(popularMovie);
+                        editor.putString("Posters", jsonSave);
+                        editor.apply();
+
+                        return false;
+                    }
+                });
+                index = 2;
                 return true;
 
             default:

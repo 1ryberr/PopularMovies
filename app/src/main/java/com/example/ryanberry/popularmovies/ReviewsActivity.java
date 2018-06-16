@@ -38,9 +38,7 @@ public class ReviewsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Reviews");
         toolbar.setTitle("Reviews");
 
-
         listView = (ListView) findViewById(R.id.xmlListView);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,14 +49,11 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         });
 
-
-
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
         reviews = "/3/movie/" + id + "/reviews";
         reviewSearchUrl = NetworkUtils.buildUrl(reviews);
         new TheMovieDBReviewsQueryTask().execute(reviewSearchUrl);
-
 
     }
 

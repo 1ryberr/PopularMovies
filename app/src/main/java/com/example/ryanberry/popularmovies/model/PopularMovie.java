@@ -18,6 +18,10 @@ public class PopularMovie {
         this.id = id;
     }
 
+    public PopularMovie(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
     public String getPosterPath() {
         return posterPath;
     }
@@ -61,6 +65,7 @@ public class PopularMovie {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }

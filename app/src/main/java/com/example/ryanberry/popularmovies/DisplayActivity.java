@@ -1,24 +1,35 @@
 package com.example.ryanberry.popularmovies;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
+
 import java.util.List;
 
 public class DisplayActivity extends AppCompatActivity {
@@ -30,11 +41,21 @@ public class DisplayActivity extends AppCompatActivity {
     private TextView ratingTextView;
     private ImageButton trailerBtn;
     private ImageButton trailerBtn2;
+    private ImageButton addToFavorites;
     private Button reviewsBTN;
     private URL trailerSearchUrl;
     private int id = 0;
     private String videos;
     private List<String> keys;
+    private String poster;
+    private List<PopularMovie> moviePoster;
+    String title;
+    String releaseDate;
+    String overView;
+    int voteAverage;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +63,17 @@ public class DisplayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display);
 
         Intent intent = getIntent();
-        String poster = intent.getStringExtra("Poster");
-        String title = intent.getStringExtra("Title");
-        String releaseDate = intent.getStringExtra("ReleaseDate");
-        String overView = intent.getStringExtra("OverView");
-        int voteAverage = intent.getIntExtra("VoteAverage", 0);
+        poster = intent.getStringExtra("Poster");
+        title = intent.getStringExtra("Title");
+        releaseDate = intent.getStringExtra("ReleaseDate");
+        overView = intent.getStringExtra("OverView");
+        voteAverage = intent.getIntExtra("VoteAverage", 0);
         id = intent.getIntExtra("id", 0);
 
         trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
         trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
         reviewsBTN = (Button) findViewById(R.id.reviewsBtn);
-
+        addToFavorites = (ImageButton) findViewById(R.id.addToFavorites);
         overViewText = (TextView) findViewById(R.id.overViewTextView);
         overViewText.setText(overView);
 
@@ -66,12 +87,12 @@ public class DisplayActivity extends AppCompatActivity {
 
         image = (ImageView) findViewById(R.id.imageView);
 
+
         Picasso.with(DisplayActivity.this)
 
                 .load("https://image.tmdb.org/t/p/w185" + poster)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(image);
-
 
         videos = "/3/movie/" + id + "/videos";
         trailerSearchUrl = NetworkUtils.buildUrl(videos);
@@ -80,6 +101,7 @@ public class DisplayActivity extends AppCompatActivity {
         trailerBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (keys.size() > 1) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(1))));
                 } else {
@@ -93,6 +115,7 @@ public class DisplayActivity extends AppCompatActivity {
         trailerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (keys.size() > 0) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + keys.get(0))));
                 } else {
@@ -106,14 +129,64 @@ public class DisplayActivity extends AppCompatActivity {
         reviewsBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DisplayActivity.this, ReviewsActivity.class);
-                intent.putExtra("id", id);
-                startActivity(intent);
+
+                if (isOnline()) {
+
+                    Intent intent = new Intent(DisplayActivity.this, ReviewsActivity.class);
+                    intent.putExtra("id", id);
+                    startActivity(intent);
+
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DisplayActivity.this);
+
+                    builder.setTitle("Network Error");
+                    builder.setMessage(R.string.error_message);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+                    builder.show();
+
+                }
 
             }
         });
 
 
+     addToFavorites.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+         saveData();
+         }
+     });
+
+    }
+
+    private void saveData(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Posters",null);
+        Type type = new TypeToken<List<PopularMovie >>(){}.getType();
+        moviePoster = gson.fromJson(json,type);
+        if (moviePoster == null){
+            moviePoster = new ArrayList<>();
+        }
+        moviePoster.add(new PopularMovie(poster, title, voteAverage, overView, releaseDate, id));
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String jsonSave = gson.toJson(moviePoster);
+        editor.putString("Posters", jsonSave);
+        editor.apply();
+
+    }
+
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
     public class TheMovieDBTrailerQueryTask extends AsyncTask<URL, Void, String> {

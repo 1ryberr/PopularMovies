@@ -36,6 +36,7 @@ public class MovieAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
+
         if (convertView == null) {
 
             imageView = new ImageView(mContext);
@@ -56,5 +57,12 @@ public class MovieAdapter extends BaseAdapter {
 
         return imageView;
     }
+
+    public void removeItem(int position){
+        movies.remove(position);
+        notifyDataSetChanged();
+    }
+
+
 
 }
