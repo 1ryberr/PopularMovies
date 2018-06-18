@@ -24,4 +24,7 @@ public interface MovieDOA {
 
     @Delete
     void deleteTask(PopularMovie popularMovie);
+
+    @Query("SELECT * FROM popularmovie where id =:id")
+    PopularMovie loadMovieById(int id);
 }

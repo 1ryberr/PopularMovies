@@ -92,6 +92,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        posterClicked(popularMovieslist);
+                    }
+                });
+
+            }
+        });
+
+    }
 
     public class TheMovieDBQueryTask extends AsyncTask<URL, Void, String> {
 
@@ -281,8 +299,8 @@ public class MainActivity extends AppCompatActivity {
                         AppExecutors.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
-                                List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
-                                mDb.movieDOA().deleteTask(popularMovieslist.get(position));
+                                List<PopularMovie> popularMovies = mDb.movieDOA().loadAllTask();
+                                mDb.movieDOA().deleteTask(popularMovies.get(position));
                             }
                         });
 

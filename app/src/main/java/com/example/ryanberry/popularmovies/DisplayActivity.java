@@ -46,12 +46,14 @@ public class DisplayActivity extends AppCompatActivity {
     private String videos;
     private List<String> keys;
     private String poster;
-    private List<PopularMovie> moviePoster;
     private String title;
     private String releaseDate;
     private String overView;
     private int voteAverage;
     private AppDatabase mDb;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +166,19 @@ public class DisplayActivity extends AppCompatActivity {
         addToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                   PopularMovie moviePoster = mDb.movieDOA().loadMovieById(id);
+                   if(moviePoster == null){
+                       saveData();
+                   }else {
+                       mDb.movieDOA().deleteTask(moviePoster);
+                   }
+                    }
+                });
+
             }
         });
     }
@@ -183,7 +197,6 @@ public class DisplayActivity extends AppCompatActivity {
         finish();
 
     }
-
 
     public boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)
