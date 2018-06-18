@@ -3,7 +3,6 @@ package com.example.ryanberry.popularmovies;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -22,13 +21,9 @@ import com.example.ryanberry.popularmovies.model.AppDatabase;
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -63,7 +58,20 @@ public class MainActivity extends AppCompatActivity {
             }
             if (index == 2) {
                 getSupportActionBar().setTitle("My Favorite Movies");
-                posterClicked(mDb.movieDOA().loadAllTask());
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                posterClicked(popularMovieslist);
+                            }
+                        });
+
+                    }
+                });
+
 
             }else {
                 searchMovies(popOrTop[index], index);
@@ -167,21 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<PopularMovie> loadData() {
-
-        List<PopularMovie> moviePoster;
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("Posters", null);
-        Type type = new TypeToken<List<PopularMovie>>() {
-        }.getType();
-        moviePoster = gson.fromJson(json, type);
-        if (moviePoster == null) {
-            moviePoster = new ArrayList<>();
-        }
-        return moviePoster;
-    }
-
     public void searchMovies(String path, int index) {
 
         String top = "Top Rated Movies";
@@ -281,21 +274,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
                 gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
-                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                         movieAdapter.removeItem(position);
-//                        List<PopularMovie> popularMovie = loadData();
-//                        popularMovie.remove(position);
-//                        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
-//                        Gson gson = new Gson();
-//                        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                        String jsonSave = gson.toJson(popularMovie);
-//                        editor.putString("Posters", jsonSave);
-//                        editor.apply();
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
+                                mDb.movieDOA().deleteTask(popularMovieslist.get(position));
+                            }
+                        });
 
                         return false;
                     }

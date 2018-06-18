@@ -3,7 +3,6 @@ package com.example.ryanberry.popularmovies;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -23,14 +22,10 @@ import com.example.ryanberry.popularmovies.model.AppDatabase;
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
 
 import java.util.List;
 
@@ -169,22 +164,6 @@ public class DisplayActivity extends AppCompatActivity {
         addToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                final PopularMovie popularMovie = new PopularMovie(poster, title, voteAverage, overView, releaseDate, id);
-
-
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-
-
-                        mDb.movieDOA().insertMovie(popularMovie);
-                    }
-                });
-
-
-                finish();
-
                 saveData();
             }
         });
@@ -192,19 +171,16 @@ public class DisplayActivity extends AppCompatActivity {
 
     private void saveData() {
 
-//        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
-//        Gson gson = new Gson();
-//        String json = sharedPreferences.getString("Posters",null);
-//        Type type = new TypeToken<List<PopularMovie >>(){}.getType();
-//        moviePoster = gson.fromJson(json,type);
-//        if (moviePoster == null){
-//            moviePoster = new ArrayList<>();
-//        }
-//        moviePoster.add(new PopularMovie(poster, title, voteAverage, overView, releaseDate, id));
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        String jsonSave = gson.toJson(moviePoster);
-//        editor.putString("Posters", jsonSave);
-//        editor.apply();
+        final PopularMovie popularMovie = new PopularMovie(poster, title, voteAverage, overView, releaseDate, id);
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.movieDOA().insertMovie(popularMovie);
+            }
+        });
+
+        finish();
 
     }
 
