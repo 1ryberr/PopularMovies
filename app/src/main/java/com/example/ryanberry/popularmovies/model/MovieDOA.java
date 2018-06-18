@@ -1,6 +1,7 @@
 package com.example.ryanberry.popularmovies.model;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface MovieDOA {
 
     @Query("SELECT * FROM popularmovie")
-    List<PopularMovie> loadAllTask();
+    LiveData<List<PopularMovie>> loadAllTask();
 
     @Insert
     void insertMovie(PopularMovie popularMovie);

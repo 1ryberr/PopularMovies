@@ -53,8 +53,6 @@ public class DisplayActivity extends AppCompatActivity {
     private AppDatabase mDb;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,12 +168,15 @@ public class DisplayActivity extends AppCompatActivity {
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-                   PopularMovie moviePoster = mDb.movieDOA().loadMovieById(id);
-                   if(moviePoster == null){
-                       saveData();
-                   }else {
-                       mDb.movieDOA().deleteTask(moviePoster);
-                   }
+                        PopularMovie moviePoster = mDb.movieDOA().loadMovieById(id);
+                        if (moviePoster == null) {
+                            saveData();
+                        } else {
+                            mDb.movieDOA().deleteTask(moviePoster);
+                            Intent intent = new Intent(DisplayActivity.this, MainActivity.class);
+                            startActivity(intent);
+
+                        }
                     }
                 });
 

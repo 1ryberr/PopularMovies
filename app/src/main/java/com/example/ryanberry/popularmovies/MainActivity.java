@@ -1,5 +1,7 @@
 package com.example.ryanberry.popularmovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private List<PopularMovie> moviePoster;
     private MovieAdapter movieAdapter = null;
     private AppDatabase mDb;
+    private List<PopularMovie> favor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.movie_gridView);
         mDb = AppDatabase.getInstance(getApplicationContext());
         loadOnStartup(savedInstanceState);
+
+
     }
 
     private void loadOnStartup(Bundle savedInstanceState) {
@@ -58,22 +64,11 @@ public class MainActivity extends AppCompatActivity {
             }
             if (index == 2) {
                 getSupportActionBar().setTitle("My Favorite Movies");
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                posterClicked(popularMovieslist);
-                            }
-                        });
 
-                    }
-                });
+                loadFavorites();
 
 
-            }else {
+            } else {
                 searchMovies(popOrTop[index], index);
             }
 
@@ -92,23 +87,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void loadFavorites() {
+        getSupportActionBar().setTitle("My Favorite Movies");
+        index = 2;
+        final LiveData<List<PopularMovie>> popularMovieslist = mDb.movieDOA().loadAllTask();
+        popularMovieslist.observe(MainActivity.this, new Observer<List<PopularMovie>>() {
+            @Override
+            public void onChanged(@Nullable List<PopularMovie> popularMovies) {
+                popularMovieslist.removeObserver(this);
+                posterClicked(popularMovies);
+                favor = popularMovies;
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        posterClicked(popularMovieslist);
-                    }
-                });
-
-            }
-        });
-
     }
 
     public class TheMovieDBQueryTask extends AsyncTask<URL, Void, String> {
@@ -277,32 +272,26 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.favorite_movies:
                 getSupportActionBar().setTitle("My Favorite Movies");
-
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                    final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                posterClicked(popularMovieslist);
-                            }
-                        });
-
-                    }
-                });
+                 loadFavorites();
 
                 gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                        movieAdapter.removeItem(position);
+
                         AppExecutors.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
-                                List<PopularMovie> popularMovies = mDb.movieDOA().loadAllTask();
-                                mDb.movieDOA().deleteTask(popularMovies.get(position));
+                                PopularMovie moviePoster = mDb.movieDOA().loadMovieById(favor.get(position).getId());
+                                mDb.movieDOA().deleteTask(moviePoster);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        movieAdapter.removeItem(position);
+                                    }
+                                });
                             }
                         });
+
 
                         return false;
                     }
@@ -310,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
 
                 index = 2;
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
 
