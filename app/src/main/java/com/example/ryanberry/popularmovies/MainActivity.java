@@ -266,7 +266,23 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.favorite_movies:
                 getSupportActionBar().setTitle("My Favorite Movies");
-                posterClicked(mDb.movieDOA().loadAllTask());
+
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                    final List<PopularMovie> popularMovieslist = mDb.movieDOA().loadAllTask();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                posterClicked(popularMovieslist);
+                            }
+                        });
+
+                    }
+                });
+
+
+
 
                 gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override

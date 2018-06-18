@@ -26,6 +26,7 @@ import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
@@ -168,16 +169,28 @@ public class DisplayActivity extends AppCompatActivity {
         addToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-           PopularMovie popularMovie = new PopularMovie(poster,title,voteAverage,overView,releaseDate,id);
-           mDb.movieDOA().insertMovie(popularMovie);
-           finish();
 
-            saveData();
+                final PopularMovie popularMovie = new PopularMovie(poster, title, voteAverage, overView, releaseDate, id);
+
+
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        mDb.movieDOA().insertMovie(popularMovie);
+                    }
+                });
+
+
+                finish();
+
+                saveData();
             }
         });
     }
 
-    private void saveData(){
+    private void saveData() {
 
 //        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
 //        Gson gson = new Gson();
