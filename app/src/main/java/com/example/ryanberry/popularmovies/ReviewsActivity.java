@@ -26,7 +26,7 @@ public class ReviewsActivity extends AppCompatActivity {
     private URL reviewSearchUrl;
     private int id = 0;
     private String reviews;
-    ListView listView;
+    private ListView listView;
 
 
     @Override
@@ -49,12 +49,16 @@ public class ReviewsActivity extends AppCompatActivity {
             }
         });
 
+        reviewMovieTask();
+
+    }
+
+    private void reviewMovieTask() {
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
         reviews = "/3/movie/" + id + "/reviews";
         reviewSearchUrl = NetworkUtils.buildUrl(reviews);
         new TheMovieDBReviewsQueryTask().execute(reviewSearchUrl);
-
     }
 
     public class TheMovieDBReviewsQueryTask extends AsyncTask<URL, Void, String> {
@@ -62,7 +66,6 @@ public class ReviewsActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            // mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -95,7 +98,6 @@ public class ReviewsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String movieSearchResults) {
-            // mLoadingIndicator.setVisibility(View.INVISIBLE);
             List<Reviewer> mReviewer;
             if (movieSearchResults != null && !movieSearchResults.equals("")) {
                 mReviewer = JsonUtils.parseReviewsJson(movieSearchResults);

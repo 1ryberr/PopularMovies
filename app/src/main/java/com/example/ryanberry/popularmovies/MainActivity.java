@@ -18,8 +18,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 
-
-
+import com.example.ryanberry.popularmovies.model.AppDatabase;
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
@@ -43,13 +42,18 @@ public class MainActivity extends AppCompatActivity {
     private String[] popOrTop = new String[]{"/3/movie/popular", "/3/movie/top_rated"};
     private List<PopularMovie> moviePoster;
     private MovieAdapter movieAdapter = null;
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridView = (GridView) findViewById(R.id.movie_gridView);
+        mDb = AppDatabase.getInstance(getApplicationContext());
+        loadOnStartup(savedInstanceState);
+    }
 
+    private void loadOnStartup(Bundle savedInstanceState) {
         if (isOnline()) {
             if (savedInstanceState != null) {
                 index = savedInstanceState.getInt("movie_options");
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (index == 2) {
                 getSupportActionBar().setTitle("My Favorite Movies");
-                posterClicked(loadData());
+                posterClicked(mDb.movieDOA().loadAllTask());
 
             }else {
                 searchMovies(popOrTop[index], index);
@@ -160,9 +164,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
 
     }
 
@@ -265,25 +266,25 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.favorite_movies:
                 getSupportActionBar().setTitle("My Favorite Movies");
-                posterClicked(loadData());
+                posterClicked(mDb.movieDOA().loadAllTask());
 
                 gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                         movieAdapter.removeItem(position);
-                        List<PopularMovie> popularMovie = loadData();
-                        popularMovie.remove(position);
-                        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
-                        Gson gson = new Gson();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        String jsonSave = gson.toJson(popularMovie);
-                        editor.putString("Posters", jsonSave);
-                        editor.apply();
+//                        List<PopularMovie> popularMovie = loadData();
+//                        popularMovie.remove(position);
+//                        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
+//                        Gson gson = new Gson();
+//                        SharedPreferences.Editor editor = sharedPreferences.edit();
+//                        String jsonSave = gson.toJson(popularMovie);
+//                        editor.putString("Posters", jsonSave);
+//                        editor.apply();
 
                         return false;
                     }
                 });
-                
+
                 index = 2;
                 return true;
 

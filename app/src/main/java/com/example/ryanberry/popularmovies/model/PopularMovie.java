@@ -1,11 +1,20 @@
 package com.example.ryanberry.popularmovies.model;
 
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+
+@Entity(tableName = "popularmovie")
 public class PopularMovie {
+
     private String posterPath;
     private String originalTitle;
     private int voteAverage;
     private String overView;
     private String releaseDate;
+    @PrimaryKey
     private int id;
 
 
@@ -18,6 +27,7 @@ public class PopularMovie {
         this.id = id;
     }
 
+    @Ignore
     public PopularMovie(String posterPath) {
         this.posterPath = posterPath;
     }

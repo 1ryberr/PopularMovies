@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ryanberry.popularmovies.model.AppDatabase;
 import com.example.ryanberry.popularmovies.model.PopularMovie;
 import com.example.ryanberry.popularmovies.utilities.JsonUtils;
 import com.example.ryanberry.popularmovies.utilities.NetworkUtils;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DisplayActivity extends AppCompatActivity {
+
     private static final String TAG = "DisplayActivity";
     private ImageView image;
     private TextView titleText;
@@ -49,19 +51,17 @@ public class DisplayActivity extends AppCompatActivity {
     private List<String> keys;
     private String poster;
     private List<PopularMovie> moviePoster;
-    String title;
-    String releaseDate;
-    String overView;
-    int voteAverage;
-
-
-
+    private String title;
+    private String releaseDate;
+    private String overView;
+    private int voteAverage;
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-
+        mDb = AppDatabase.getInstance(getApplicationContext());
         Intent intent = getIntent();
         poster = intent.getStringExtra("Poster");
         title = intent.getStringExtra("Title");
@@ -70,33 +70,44 @@ public class DisplayActivity extends AppCompatActivity {
         voteAverage = intent.getIntExtra("VoteAverage", 0);
         id = intent.getIntExtra("id", 0);
 
-        trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
-        trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
-        reviewsBTN = (Button) findViewById(R.id.reviewsBtn);
-        addToFavorites = (ImageButton) findViewById(R.id.addToFavorites);
         overViewText = (TextView) findViewById(R.id.overViewTextView);
-        overViewText.setText(overView);
-
-        releaseText = (TextView) findViewById(R.id.releaseDatetextView);
-        releaseText.setText(releaseDate);
-
         titleText = (TextView) findViewById(R.id.titleTextView);
-        titleText.setText(title);
         ratingTextView = (TextView) findViewById(R.id.ratingTextView);
+        releaseText = (TextView) findViewById(R.id.releaseDatetextView);
+
+        releaseText.setText(releaseDate);
+        overViewText.setText(overView);
+        titleText.setText(title);
         ratingTextView.setText(String.valueOf(voteAverage));
 
+        displayImage();
+        trailerTask(id);
+        buttons();
+
+    }
+
+    private void displayImage() {
         image = (ImageView) findViewById(R.id.imageView);
-
-
         Picasso.with(DisplayActivity.this)
 
                 .load("https://image.tmdb.org/t/p/w185" + poster)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(image);
+    }
+
+    private void trailerTask(int id) {
 
         videos = "/3/movie/" + id + "/videos";
         trailerSearchUrl = NetworkUtils.buildUrl(videos);
         new TheMovieDBTrailerQueryTask().execute(trailerSearchUrl);
+    }
+
+    private void buttons() {
+        trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
+        trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
+        reviewsBTN = (Button) findViewById(R.id.reviewsBtn);
+        addToFavorites = (ImageButton) findViewById(R.id.addToFavorites);
+
 
         trailerBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,30 +165,33 @@ public class DisplayActivity extends AppCompatActivity {
         });
 
 
-     addToFavorites.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-         saveData();
-         }
-     });
+        addToFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+           PopularMovie popularMovie = new PopularMovie(poster,title,voteAverage,overView,releaseDate,id);
+           mDb.movieDOA().insertMovie(popularMovie);
+           finish();
 
+            saveData();
+            }
+        });
     }
 
     private void saveData(){
 
-        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("Posters",null);
-        Type type = new TypeToken<List<PopularMovie >>(){}.getType();
-        moviePoster = gson.fromJson(json,type);
-        if (moviePoster == null){
-            moviePoster = new ArrayList<>();
-        }
-        moviePoster.add(new PopularMovie(poster, title, voteAverage, overView, releaseDate, id));
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String jsonSave = gson.toJson(moviePoster);
-        editor.putString("Posters", jsonSave);
-        editor.apply();
+//        SharedPreferences sharedPreferences = getSharedPreferences("shared_prefs", MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = sharedPreferences.getString("Posters",null);
+//        Type type = new TypeToken<List<PopularMovie >>(){}.getType();
+//        moviePoster = gson.fromJson(json,type);
+//        if (moviePoster == null){
+//            moviePoster = new ArrayList<>();
+//        }
+//        moviePoster.add(new PopularMovie(poster, title, voteAverage, overView, releaseDate, id));
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        String jsonSave = gson.toJson(moviePoster);
+//        editor.putString("Posters", jsonSave);
+//        editor.apply();
 
     }
 
