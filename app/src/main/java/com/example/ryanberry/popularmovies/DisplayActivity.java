@@ -164,13 +164,18 @@ public class DisplayActivity extends AppCompatActivity {
         addToFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final PopularMovie popularMovie = new PopularMovie(poster, title, voteAverage, overView, releaseDate, id);
 
                 AppExecutors.getInstance().diskIO().execute(new Runnable() {
                     @Override
                     public void run() {
                         PopularMovie moviePoster = mDb.movieDOA().loadMovieById(id);
                         if (moviePoster == null) {
-                            saveData();
+
+                            mDb.movieDOA().insertMovie(popularMovie);
+                            Intent intent = new Intent(DisplayActivity.this, MainActivity.class);
+                            startActivity(intent);
+
                         } else {
                             mDb.movieDOA().deleteTask(moviePoster);
                             Intent intent = new Intent(DisplayActivity.this, MainActivity.class);
@@ -184,20 +189,6 @@ public class DisplayActivity extends AppCompatActivity {
         });
     }
 
-    private void saveData() {
-
-        final PopularMovie popularMovie = new PopularMovie(poster, title, voteAverage, overView, releaseDate, id);
-
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDb.movieDOA().insertMovie(popularMovie);
-            }
-        });
-
-        finish();
-
-    }
 
     public boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)

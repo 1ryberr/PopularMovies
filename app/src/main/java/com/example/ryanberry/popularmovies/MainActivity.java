@@ -1,7 +1,8 @@
 package com.example.ryanberry.popularmovies;
 
-import android.arch.lifecycle.LiveData;
+
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (index == 2) {
                 getSupportActionBar().setTitle("My Favorite Movies");
-
                 loadFavorites();
-
 
             } else {
                 searchMovies(popOrTop[index], index);
@@ -90,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadFavorites() {
         getSupportActionBar().setTitle("My Favorite Movies");
         index = 2;
-        final LiveData<List<PopularMovie>> popularMovieslist = mDb.movieDOA().loadAllTask();
-        popularMovieslist.observe(MainActivity.this, new Observer<List<PopularMovie>>() {
+       final MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mainViewModel.getPopularMovie().observe(MainActivity.this, new Observer<List<PopularMovie>>() {
             @Override
             public void onChanged(@Nullable List<PopularMovie> popularMovies) {
-                popularMovieslist.removeObserver(this);
+               mainViewModel.getPopularMovie().removeObserver(this);
                 posterClicked(popularMovies);
                 favor = popularMovies;
             }
@@ -283,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 PopularMovie moviePoster = mDb.movieDOA().loadMovieById(favor.get(position).getId());
                                 mDb.movieDOA().deleteTask(moviePoster);
+                                mDb.movieDOA().UpdateMovie(moviePoster);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
