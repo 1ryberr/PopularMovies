@@ -4,6 +4,7 @@
 ![alt text][ScreenShot]
 
 [ScreenShot]: https://github.com/1ryberr/PopularMovies/blob/master/PopularMovies.png
+
 [ScreenShot]: https://github.com/1ryberr/PopularMovies/blob/master/pop2.png
 
 # What the application does.
