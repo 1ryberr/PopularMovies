@@ -1,6 +1,8 @@
 package com.example.ryanberry.popularmovies;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,13 +38,25 @@ public class MovieAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-
+        imageView = new ImageView(mContext);
         if (convertView == null) {
+            if ((mContext.getResources().getConfiguration().screenLayout &
+                    Configuration.SCREENLAYOUT_SIZE_MASK) >=
+                    Configuration.SCREENLAYOUT_SIZE_LARGE) {
+                Log.v(TAG, "Screen os table size");
 
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(700, 850));
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setPadding(0, 0, 0, 0);
+
+              //  imageView.setLayoutParams(new ViewGroup.LayoutParams(500, 750));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setPadding(0, 0, 0, 0);
+
+            }else{
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(700, 850));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setPadding(0, 0, 0, 0);
+                Log.v(TAG, "Screen os phone size");
+
+            }
 
         } else {
             imageView = (ImageView) convertView;

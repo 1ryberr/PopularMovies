@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.ryanberry.popularmovies"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -12,10 +12,10 @@ android {
 
     }
 
-    sourceSets {
-        androidTest.assets.srcDirs +=
-                files("$projectDir/schemas".toString())
-    }
+//    sourceSets {
+//        androidTest.assets.srcDirs +=
+//                files("$projectDir/schemas".toString())
+//    }
 
 
     buildTypes {
@@ -28,9 +28,9 @@ android {
 
 }
 
-repositories {
-    mavenCentral()
-}
+//repositories {
+//    mavenCentral()
+//}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -40,8 +40,8 @@ dependencies {
     implementation'android.arch.lifecycle:livedata:1.1.1'
     annotationProcessor'android.arch.lifecycle:compiler:1.1.1'
 
-    implementation 'android.arch.persistence.room:runtime:1.1.1-rc1'
-    annotationProcessor 'android.arch.persistence.room:compiler:1.1.0'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"

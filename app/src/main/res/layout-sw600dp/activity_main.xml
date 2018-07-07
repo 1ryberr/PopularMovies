@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <GridView
 
         android:id="@+id/movie_gridView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryDark"
-        android:columnWidth="212dp"
+        android:columnWidth="200dp"
         android:gravity="center"
         android:horizontalSpacing="0dp"
-        android:numColumns="5"
-        android:stretchMode="spacingWidth"
+        android:numColumns="3"
+        android:stretchMode="spacingWidthUniform"
         android:verticalSpacing="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,5 +33,4 @@
         app:layout_constraintTop_toTopOf="@+id/movie_gridView" />
 
 
-   
 </android.support.constraint.ConstraintLayout>
