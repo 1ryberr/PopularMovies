@@ -2,6 +2,7 @@ package com.example.ryanberry.popularmovies;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,12 +44,17 @@ public class MovieAdapter extends BaseAdapter {
             if ((mContext.getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK) >=
                     Configuration.SCREENLAYOUT_SIZE_LARGE) {
-                Log.v(TAG, "Screen os table size");
+                if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
 
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imageView.setPadding(0, 0, 0, 0);
 
-              //  imageView.setLayoutParams(new ViewGroup.LayoutParams(500, 750));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                imageView.setPadding(0, 0, 0, 0);
+                }else{
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(550, 750));
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imageView.setPadding(0, 0, 0, 0);
+
+                }
 
             }else{
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(700, 850));
