@@ -13,7 +13,7 @@
         android:gravity="center"
         android:horizontalSpacing="0dp"
         android:numColumns="3"
-        android:stretchMode="spacingWidthUniform"
+        android:stretchMode="spacingWidth"
         android:verticalSpacing="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

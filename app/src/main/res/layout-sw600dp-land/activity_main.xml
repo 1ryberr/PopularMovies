@@ -9,10 +9,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryDark"
-        android:columnWidth="200dp"
+        android:columnWidth="212dp"
         android:gravity="center"
         android:horizontalSpacing="0dp"
-        android:numColumns="3"
+        android:numColumns="5"
         android:stretchMode="spacingWidth"
         android:verticalSpacing="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -33,5 +33,5 @@
         app:layout_constraintTop_toTopOf="@+id/movie_gridView" />
 
 
-   
+
 </android.support.constraint.ConstraintLayout>
