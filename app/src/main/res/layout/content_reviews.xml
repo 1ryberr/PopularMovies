@@ -8,7 +8,6 @@
     tools:context=".ReviewsActivity"
     tools:showIn="@layout/activity_reviews">
 
-
     <ListView
         android:id="@+id/xmlListView"
         android:layout_width="0dp"

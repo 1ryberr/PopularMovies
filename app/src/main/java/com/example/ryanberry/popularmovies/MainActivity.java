@@ -88,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadFavorites() {
         getSupportActionBar().setTitle("My Favorite Movies");
         index = 2;
-       final MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        final MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.getPopularMovie().observe(MainActivity.this, new Observer<List<PopularMovie>>() {
             @Override
             public void onChanged(@Nullable List<PopularMovie> popularMovies) {
-               mainViewModel.getPopularMovie().removeObserver(this);
+                mainViewModel.getPopularMovie().removeObserver(this);
                 posterClicked(popularMovies);
                 favor = popularMovies;
             }
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.favorite_movies:
                 getSupportActionBar().setTitle("My Favorite Movies");
-                 loadFavorites();
+                loadFavorites();
 
                 gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override

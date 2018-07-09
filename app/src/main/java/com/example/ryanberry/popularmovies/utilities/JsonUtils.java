@@ -93,7 +93,7 @@ public class JsonUtils {
                 content = results.getJSONObject(i).getString("content");
                 url = results.getJSONObject(i).getString("url");
                 myReviews.add(new Reviewer(author, content, url));
-           }
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class JsonUtils {
         }
 
 
-        return  myReviews ;
+        return myReviews;
 
     }
 

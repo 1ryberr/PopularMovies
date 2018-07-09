@@ -49,7 +49,7 @@ public class ReviewAdapter extends ArrayAdapter {
         viewHolder.author.setText(reviewer.getAuthor());
         viewHolder.preview.setText(reviewer.getContent());
         viewHolder.url.setText(reviewer.getUrl());
-        Linkify.addLinks(viewHolder.url,Linkify.WEB_URLS);
+        Linkify.addLinks(viewHolder.url, Linkify.WEB_URLS);
 
         return convertView;
     }

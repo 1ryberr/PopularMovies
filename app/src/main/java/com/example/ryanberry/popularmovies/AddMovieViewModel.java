@@ -1,12 +1,12 @@
 package com.example.ryanberry.popularmovies;
 
-        import android.arch.lifecycle.LiveData;
-        import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
 
-        import com.example.ryanberry.popularmovies.model.AppDatabase;
-        import com.example.ryanberry.popularmovies.model.PopularMovie;
+import com.example.ryanberry.popularmovies.model.AppDatabase;
+import com.example.ryanberry.popularmovies.model.PopularMovie;
 
-        import java.util.List;
+import java.util.List;
 
 public class AddMovieViewModel extends ViewModel {
 

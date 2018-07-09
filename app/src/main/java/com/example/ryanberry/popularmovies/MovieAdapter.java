@@ -49,18 +49,17 @@ public class MovieAdapter extends BaseAdapter {
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     imageView.setPadding(0, 0, 0, 0);
 
-                }else{
+                } else {
                     imageView.setLayoutParams(new ViewGroup.LayoutParams(550, 750));
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     imageView.setPadding(0, 0, 0, 0);
 
                 }
 
-            }else{
+            } else {
                 imageView.setLayoutParams(new ViewGroup.LayoutParams(700, 850));
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 imageView.setPadding(0, 0, 0, 0);
-                Log.v(TAG, "Screen os phone size");
 
             }
 
@@ -78,11 +77,10 @@ public class MovieAdapter extends BaseAdapter {
         return imageView;
     }
 
-    public void removeItem(int position){
+    public void removeItem(int position) {
         movies.remove(position);
         notifyDataSetChanged();
     }
-
 
 
 }
