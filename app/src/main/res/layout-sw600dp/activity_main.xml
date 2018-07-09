@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/colorPrimaryDark"
-        android:columnWidth="200dp"
+        android:columnWidth="198dp"
         android:gravity="center"
         android:horizontalSpacing="0dp"
         android:numColumns="3"

@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         mDb = AppDatabase.getInstance(getApplicationContext());
         loadOnStartup(savedInstanceState);
 
-
     }
 
     private void loadOnStartup(Bundle savedInstanceState) {
