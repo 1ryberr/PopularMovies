@@ -20,7 +20,7 @@ public class MovieAdapter extends BaseAdapter {
     private final Context mContext;
 
 
-    public MovieAdapter(List<PopularMovie> movies, Context mContext) {
+    MovieAdapter(List<PopularMovie> movies, Context mContext) {
         this.movies = movies;
         this.mContext = mContext;
     }
@@ -67,7 +67,7 @@ public class MovieAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
 
-        Picasso.with(mContext)
+        Picasso.get()
 
                 .load("https://image.tmdb.org/t/p/w185" + movies.get(position).getPosterPath())
                 .placeholder(R.mipmap.ic_launcher_round)
@@ -77,7 +77,7 @@ public class MovieAdapter extends BaseAdapter {
         return imageView;
     }
 
-    public void removeItem(int position) {
+    void removeItem(int position) {
         movies.remove(position);
         notifyDataSetChanged();
     }

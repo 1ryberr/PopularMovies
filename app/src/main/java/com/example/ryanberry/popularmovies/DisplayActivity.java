@@ -66,10 +66,10 @@ public class DisplayActivity extends AppCompatActivity {
         voteAverage = intent.getIntExtra("VoteAverage", 0);
         id = intent.getIntExtra("id", 0);
 
-        overViewText = (TextView) findViewById(R.id.overViewTextView);
-        titleText = (TextView) findViewById(R.id.titleTextView);
-        ratingTextView = (TextView) findViewById(R.id.ratingTextView);
-        releaseText = (TextView) findViewById(R.id.releaseDatetextView);
+        overViewText = findViewById(R.id.overViewTextView);
+        titleText = findViewById(R.id.titleTextView);
+        ratingTextView = findViewById(R.id.ratingTextView);
+        releaseText = findViewById(R.id.releaseDatetextView);
 
         releaseText.setText(releaseDate);
         overViewText.setText(overView);
@@ -83,8 +83,8 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     private void displayImage() {
-        image = (ImageView) findViewById(R.id.imageView);
-        Picasso.with(DisplayActivity.this)
+        image = findViewById(R.id.imageView);
+        Picasso.get()
 
                 .load("https://image.tmdb.org/t/p/w185" + poster)
                 .placeholder(R.mipmap.ic_launcher)
@@ -99,10 +99,10 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     private void buttons() {
-        trailerBtn = (ImageButton) findViewById(R.id.trailerBTN);
-        trailerBtn2 = (ImageButton) findViewById(R.id.trailerBtn2);
-        reviewsBTN = (Button) findViewById(R.id.reviewsBtn);
-        addToFavorites = (ImageButton) findViewById(R.id.addToFavorites);
+        trailerBtn =  findViewById(R.id.trailerBTN);
+        trailerBtn2 =  findViewById(R.id.trailerBtn2);
+        reviewsBTN =  findViewById(R.id.reviewsBtn);
+        addToFavorites =  findViewById(R.id.addToFavorites);
 
 
         trailerBtn2.setOnClickListener(new View.OnClickListener() {
